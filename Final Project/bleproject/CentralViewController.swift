@@ -146,27 +146,3 @@ extension CentralViewController: CBCentralManagerDelegate, CBPeripheralDelegate 
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
