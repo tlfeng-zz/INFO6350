@@ -14,7 +14,6 @@
 		4B2C3DFF225D6DEB00419922 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C3DFE225D6DEB00419922 /* Assets.xcassets */; };
 		4B2C3E02225D6DEB00419922 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */; };
 		4B36FC5722640A9300A8E070 /* CentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5622640A9300A8E070 /* CentralViewController.swift */; };
-		4B36FC5922640ADC00A8E070 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5822640ADC00A8E070 /* PeripheralViewController.swift */; };
 		4B36FC5B22640FCF00A8E070 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5A22640FCF00A8E070 /* Message.swift */; };
 		4B68C3AB226BF5AC00177CB3 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */; };
 		4B68C3B0226BF71A00177CB3 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AE226BF71A00177CB3 /* TableView.swift */; };
@@ -28,6 +27,10 @@
 		4B68C3D0226BFAF100177CB3 /* yoububble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B68C3CB226BFAF100177CB3 /* yoububble@2x.png */; };
 		4B68C3D2226BFB0E00177CB3 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D1226BFB0E00177CB3 /* UserInfo.swift */; };
 		4B68C3D4226BFB4F00177CB3 /* TableHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D3226BFB4F00177CB3 /* TableHeaderViewCell.swift */; };
+		4B68C3D8226C1AE900177CB3 /* CentralViewController+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */; };
+		4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */; };
+		4B94535E226C329900A01A75 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B94535D226C329900A01A75 /* PeripheralViewController.swift */; };
+		4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B945363226E8FA800A01A75 /* LogViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,7 +43,6 @@
 		4B2C3E01225D6DEB00419922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4B2C3E03225D6DEB00419922 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B36FC5622640A9300A8E070 /* CentralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralViewController.swift; sourceTree = "<group>"; };
-		4B36FC5822640ADC00A8E070 /* PeripheralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralViewController.swift; sourceTree = "<group>"; };
 		4B36FC5A22640FCF00A8E070 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		4B68C3AE226BF71A00177CB3 /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
@@ -54,6 +56,10 @@
 		4B68C3CB226BFAF100177CB3 /* yoububble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "yoububble@2x.png"; sourceTree = "<group>"; };
 		4B68C3D1226BFB0E00177CB3 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		4B68C3D3226BFB4F00177CB3 /* TableHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderViewCell.swift; sourceTree = "<group>"; };
+		4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CentralViewController+Bluetooth.swift"; sourceTree = "<group>"; };
+		4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeripheralViewController+Bluetooth.swift"; sourceTree = "<group>"; };
+		4B94535D226C329900A01A75 /* PeripheralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralViewController.swift; sourceTree = "<group>"; };
+		4B945363226E8FA800A01A75 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,20 +92,21 @@
 		4B2C3DF3225D6DEA00419922 /* bleproject */ = {
 			isa = PBXGroup;
 			children = (
+				4B68C3D6226C19EB00177CB3 /* Extension */,
 				4B68C3B6226BF9C200177CB3 /* Images */,
 				4B68C3AD226BF6BB00177CB3 /* View */,
 				4B68C3AC226BF6B400177CB3 /* Model */,
 				4B2C3DF4225D6DEA00419922 /* AppDelegate.swift */,
 				4B2C3DF6225D6DEA00419922 /* MainViewController.swift */,
+				4B945363226E8FA800A01A75 /* LogViewController.swift */,
 				4B2C3DF8225D6DEA00419922 /* Main.storyboard */,
 				4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */,
-				4B36FC5822640ADC00A8E070 /* PeripheralViewController.swift */,
+				4B94535D226C329900A01A75 /* PeripheralViewController.swift */,
 				4B36FC5622640A9300A8E070 /* CentralViewController.swift */,
 				4B2C3DFE225D6DEB00419922 /* Assets.xcassets */,
 				4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */,
 				4B2C3E03225D6DEB00419922 /* Info.plist */,
 				4B2C3DFB225D6DEA00419922 /* bleproject.xcdatamodeld */,
-				4B36FC5A22640FCF00A8E070 /* Message.swift */,
 			);
 			path = bleproject;
 			sourceTree = "<group>";
@@ -110,6 +117,7 @@
 				4B68C3B2226BF72800177CB3 /* ChatDataSource.swift */,
 				4B68C3B4226BF73400177CB3 /* MessageItem.swift */,
 				4B68C3D1226BFB0E00177CB3 /* UserInfo.swift */,
+				4B36FC5A22640FCF00A8E070 /* Message.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -134,6 +142,15 @@
 				4B68C3CB226BFAF100177CB3 /* yoububble@2x.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		4B68C3D6226C19EB00177CB3 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */,
+				4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,9 +229,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B36FC5922640ADC00A8E070 /* PeripheralViewController.swift in Sources */,
+				4B68C3D8226C1AE900177CB3 /* CentralViewController+Bluetooth.swift in Sources */,
 				4B2C3DF7225D6DEA00419922 /* MainViewController.swift in Sources */,
 				4B2C3DF5225D6DEA00419922 /* AppDelegate.swift in Sources */,
+				4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */,
 				4B68C3B1226BF71A00177CB3 /* TableViewCell.swift in Sources */,
 				4B68C3D2226BFB0E00177CB3 /* UserInfo.swift in Sources */,
 				4B68C3B3226BF72800177CB3 /* ChatDataSource.swift in Sources */,
@@ -222,9 +240,11 @@
 				4B36FC5722640A9300A8E070 /* CentralViewController.swift in Sources */,
 				4B68C3B0226BF71A00177CB3 /* TableView.swift in Sources */,
 				4B36FC5B22640FCF00A8E070 /* Message.swift in Sources */,
+				4B94535E226C329900A01A75 /* PeripheralViewController.swift in Sources */,
 				4B68C3B5226BF73400177CB3 /* MessageItem.swift in Sources */,
 				4B2C3DFD225D6DEA00419922 /* bleproject.xcdatamodeld in Sources */,
 				4B68C3D4226BFB4F00177CB3 /* TableHeaderViewCell.swift in Sources */,
+				4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

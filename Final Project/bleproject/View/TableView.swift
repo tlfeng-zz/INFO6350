@@ -134,7 +134,7 @@ class TableView:UITableView,UITableViewDelegate, UITableViewDataSource
             
             let item =  data as! MessageItem
             let height  =  max(item.insets.top + item.view.frame.size.height  + item.insets.bottom, 52) + 17
-            print("height:\(height)")
+            //print("height:\(height)")
             return height
     }
     

@@ -13,7 +13,7 @@
         <!--Main View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MainViewController" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -22,22 +22,14 @@
                                 <rect key="frame" x="152.5" y="394" width="70" height="30"/>
                                 <state key="normal" title="Peripheral"/>
                                 <connections>
-                                    <segue destination="9hf-cc-dRf" kind="show" id="RJX-7p-hha"/>
+                                    <segue destination="KA1-Ul-CjB" kind="show" identifier="peripheral" id="x7Z-Qx-Khx"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DNW-N6-sgY">
                                 <rect key="frame" x="162.5" y="214" width="50" height="30"/>
                                 <state key="normal" title="Central"/>
                                 <connections>
-                                    <segue destination="I8x-d9-GV6" kind="show" id="ASW-Kq-Hty"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nFi-VW-s1F">
-                                <rect key="frame" x="80" y="531" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Test"/>
-                                <connections>
-                                    <segue destination="KA1-Ul-CjB" kind="show" id="Xf7-bw-aZf"/>
+                                    <segue destination="KA1-Ul-CjB" kind="show" identifier="central" id="XGF-FJ-C8k"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -83,13 +75,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KHE-Ii-Sd3">
-                                <rect key="frame" x="30" y="184" width="315" height="30"/>
+                                <rect key="frame" x="30" y="140" width="315" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KVy-Gr-sgJ">
-                                <rect key="frame" x="90" y="264" width="35" height="30"/>
+                                <rect key="frame" x="90" y="220" width="35" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="35" id="gxu-sx-ELd"/>
                                 </constraints>
@@ -99,7 +91,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sqX-xr-1D2">
-                                <rect key="frame" x="250" y="264" width="35" height="30"/>
+                                <rect key="frame" x="250" y="220" width="35" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="35" id="akI-6B-H9I"/>
                                 </constraints>
@@ -128,22 +120,61 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AdO-pj-ZSl" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1919" y="27"/>
+            <point key="canvasLocation" x="-364" y="886"/>
         </scene>
-        <!--Chat View Controller-->
+        <!--Chat-->
         <scene sceneID="zy0-1r-M25">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dwq-xy-UcA" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="KA1-Ul-CjB" customClass="ChatViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="zJu-ZB-YxA" customClass="ChatV">
+                    <view key="view" contentMode="scaleToFill" id="zJu-ZB-YxA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="9y0-LF-16M"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Chat" id="2DK-Lq-vgQ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="I3L-E6-xGG">
+                            <connections>
+                                <segue destination="Erm-P5-tl7" kind="show" identifier="log" id="R9W-eL-nms"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dwq-xy-UcA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1071" y="957"/>
+            <point key="canvasLocation" x="1914" y="116"/>
+        </scene>
+        <!--Log View Controller-->
+        <scene sceneID="uuq-MG-ZWD">
+            <objects>
+                <viewController id="Erm-P5-tl7" customClass="LogViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mj6-zL-4Iw">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Log" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6Kq-3k-Jbb">
+                                <rect key="frame" x="50" y="114" width="275" height="503"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="top" secondItem="TvK-D6-d67" secondAttribute="top" constant="50" id="YPo-Zt-13X"/>
+                            <constraint firstItem="TvK-D6-d67" firstAttribute="trailing" secondItem="6Kq-3k-Jbb" secondAttribute="trailing" constant="50" id="Zv6-Mx-Ic4"/>
+                            <constraint firstItem="TvK-D6-d67" firstAttribute="bottom" secondItem="6Kq-3k-Jbb" secondAttribute="bottom" constant="50" id="dz1-X2-etM"/>
+                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="leading" secondItem="TvK-D6-d67" secondAttribute="leading" constant="50" id="qBi-9U-MYb"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="TvK-D6-d67"/>
+                    </view>
+                    <connections>
+                        <outlet property="logTextView" destination="6Kq-3k-Jbb" id="MfE-hw-Jm6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pZ7-SA-C94" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2701.5999999999999" y="115.59220389805098"/>
         </scene>
         <!--Peripheral View Controller-->
         <scene sceneID="kqq-gQ-pIU">
@@ -154,13 +185,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Cb-s8-Bjb">
-                                <rect key="frame" x="36" y="164" width="303" height="30"/>
+                                <rect key="frame" x="36" y="120" width="303" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OJw-fQ-AMs">
-                                <rect key="frame" x="172" y="244" width="31" height="30"/>
+                                <rect key="frame" x="172" y="200" width="31" height="30"/>
                                 <state key="normal" title="post"/>
                                 <connections>
                                     <action selector="didClickPost:" destination="9hf-cc-dRf" eventType="touchUpInside" id="was-DQ-jzh"/>
@@ -184,7 +215,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JVK-yF-c3h" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1918" y="712"/>
+            <point key="canvasLocation" x="329" y="886"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="XGF-FJ-C8k"/>
+    </inferredMetricsTieBreakers>
 </document>

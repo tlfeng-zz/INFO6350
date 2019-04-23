@@ -12,7 +12,7 @@ struct Header {
     let seq_num: UInt16
     let ack_num: UInt16
     let hlenCtrlByte: HlenCtrlByte
-    let action: UInt8
+    let action: Action
 }
 
 struct HlenCtrlByte: OptionSet {
@@ -59,7 +59,7 @@ struct Message {
     
     func archive() -> Data {
         
-        var archivedHeader = ArchivedHeader(seq_num: self.header.seq_num, ack_num: self.header.ack_num, hlenCtrl: self.header.hlenCtrlByte.rawValue, action: self.header.action)
+        var archivedHeader = ArchivedHeader(seq_num: self.header.seq_num, ack_num: self.header.ack_num, hlenCtrl: self.header.hlenCtrlByte.rawValue, action: self.header.action.rawValue)
         
         var archivedData = Data(
             bytes: &archivedHeader,
@@ -81,13 +81,21 @@ struct Message {
         let hlenCtrlByte = HlenCtrlByte(rawValue: hlenCtrlData.uint8)
         let headerLength = HlenCtrlByte.getHeaderLength(hlenCtrlByte: hlenCtrlByte)
         
+        let action = Action(rawValue: actionData.uint8)
+        
         let payloadData = data.subdata(in: Data.Index(headerLength) ..< data.count)
         
-        let header = Header(seq_num: seq_numData.uint16, ack_num: ack_numData.uint16, hlenCtrlByte: hlenCtrlByte, action: actionData.uint8)
+        let header = Header(seq_num: seq_numData.uint16, ack_num: ack_numData.uint16, hlenCtrlByte: hlenCtrlByte, action: action!)
         let message = Message(header: header, payload: payloadData)
         
         return message
     }
+}
+
+enum Action : UInt8{
+    case empty = 0
+    case sendText = 1
+    case sendImage = 2
 }
 
 extension Data {

@@ -19,8 +19,6 @@ class CentralViewController: UIViewController {
     private var peripheral: CBPeripheral?
     private var characteristic: CBCharacteristic?
     
-    var imagePicker: UIImagePickerController?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "蓝牙中心设备"
@@ -36,7 +34,7 @@ class CentralViewController: UIViewController {
         let data = (self.textField.text ?? "empty input")!.data(using: String.Encoding.utf8)
         //self.peripheral?.writeValue(data!, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
         let hlenctrl1: HlenCtrlByte = [.hlen2, .hlen3, .syn]
-        let head1 = Header(seq_num: 234, ack_num: 567, hlenCtrlByte: hlenctrl1, action: 123)
+        let head1 = Header(seq_num: 234, ack_num: 567, hlenCtrlByte: hlenctrl1, action: .empty)
         let sendStruct = Message(header: head1, payload: data!)
         print("Size of Message: \(sendStruct.archive())")
         let msgData = sendStruct.archive()
@@ -146,27 +144,3 @@ extension CentralViewController: CBCentralManagerDelegate, CBPeripheralDelegate 
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

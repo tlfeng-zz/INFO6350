@@ -5,7 +5,6 @@
 //  Created by Tianli Feng on 4/14/19.
 //  Copyright © 2019 Tianli Feng. All rights reserved.
 //
-
 import UIKit
 import CoreBluetooth
 
