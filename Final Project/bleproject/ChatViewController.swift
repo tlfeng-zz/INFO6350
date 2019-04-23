@@ -26,22 +26,21 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     var isCentral:Bool = true
     // control handshaking
     var isHandshaking = false
-    let handshakeInterval: Double = 10
+    let handshakeInterval: TimeInterval = 15
     var timestamp: Double = 0
-    // sent seqence number
+    // seqence number
     var sent_seq_num: UInt16 = 0
-    // sent acknowledgement number
-    var sent_ack_num: UInt16 = 0
-    // received sequence number
     var received_seq_num: UInt16 = 0
-    // received acknowledgement number
+    //acknowledgement number
+    var sent_ack_num: UInt16 = 0
     var received_ack_num: UInt16 = 0
+    // payload size
+    var sent_payload_size: UInt16 = 0;
+    var received_payload_size: UInt16 = 0;
     // connection ready sign
     var isConnectionReady = false
     // timer
     var timer: Timer?
-    // last payload size
-    var last_payload_size: UInt16 = 0;
     
     var Chats: NSMutableArray!
     var tableView: TableView!
@@ -65,6 +64,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         else {
         peripheralManager = CBPeripheralManager.init(delegate: self, queue: .main)
         }
+        
     }
     
     func setupSendPanel()
@@ -91,7 +91,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         // create a UIButton as the send message button
         let sendButton = UIButton(frame:CGRect(x: screenWidth - 80,y: 10,width: 72,height: 36))
         sendButton.backgroundColor=UIColor(red: 0x37/255, green: 0xba/255, blue: 0x46/255, alpha: 1)
-        sendButton.addTarget(self, action:#selector(ChatViewController.sendMessage) ,
+        sendButton.addTarget(self, action:#selector(sendTapped) ,
                              for:UIControl.Event.touchUpInside)
         sendButton.layer.cornerRadius=6.0
         sendButton.setTitle("发送", for:UIControl.State())
@@ -106,7 +106,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField:UITextField) -> Bool
     {
-        sendMessage()
+        sendTapped()
         return true
     }
     
@@ -122,11 +122,9 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
     }
     
-    @objc func sendMessage() {
+    @objc func sendTapped() {
         // check if need handshaking
-        let timeDiff = NSDate().timeIntervalSince1970 - timestamp
-        if timeDiff > handshakeInterval {
-            isConnectionReady = false
+        if !isConnectionReady {
             beginThreeWayHandshake()
             isHandshaking = true
         }
@@ -144,31 +142,9 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
                 self.tableView.chatDataSource = self
                 self.tableView.reloadData()
         
-                // bluetooth
+                // send through bluetooth
                 let data = (self.msgTextField!.text ?? "empty input")!.data(using: String.Encoding.utf8)
-                //  encapsulation
-                // calculate seq number
-                if self.last_payload_size == 0 {
-                    self.sent_seq_num += 1
-                }
-                else {
-                    self.sent_seq_num += self.last_payload_size
-        }
-                let hlenctrl: HlenCtrlByte = [.hlen2, .hlen3, .ack]
-                let head = Header(seq_num: self.sent_seq_num, ack_num: self.received_ack_num, hlenCtrlByte: hlenctrl, action: Action.sendText)
-                let sendStruct = Message(header: head, payload: data!)
-                let thisLog = "- Msg sent: seq:\(self.sent_seq_num), ack:\(self.sent_ack_num), action:\(head.action) -"
-                self.log = self.log + thisLog + "\n"
-                print(thisLog)
-                let msgData = sendStruct.archive()
-        
-                // send
-                if self.isCentral {
-                    self.peripheral?.writeValue(msgData, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
-                }
-                else {
-                    self.peripheralManager?.updateValue(msgData, for: self.characteristicP!, onSubscribedCentrals: nil)
-                }
+                self.sendMessage(payload: data!, action: .sendText)
         
                 // dismiss keyboard, and clear the input field
                 //self.showTableView()
@@ -246,7 +222,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let hlenctrl: HlenCtrlByte = [.hlen2, .hlen3, .syn]
         let head = Header(seq_num: sent_seq_num, ack_num: 0, hlenCtrlByte: hlenctrl, action: Action.empty)
         let sendStruct = Message(header: head, payload: Data())
-        printAndLog("- Msg sent: seq:\(self.sent_seq_num), ack:\(self.sent_ack_num), action:\(head.action) -")
+        printAndLog("- Msg sent: seq:\(sent_seq_num), ack:\(sent_ack_num), action:\(head.action) -")
         let msgData = sendStruct.archive()
         // send
         self.peripheral?.writeValue(msgData, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
@@ -271,7 +247,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let hlenctrl: HlenCtrlByte = [.hlen2, .hlen3, .ack, .syn]
         let head = Header(seq_num: sent_seq_num, ack_num: sent_ack_num, hlenCtrlByte: hlenctrl, action: Action.empty)
         let sendStruct = Message(header: head, payload: Data())
-        printAndLog("- Msg sent: seq:\(self.sent_seq_num), ack:\(self.sent_ack_num), action:\(head.action) -")
+        printAndLog("- Msg sent: seq:\(sent_seq_num), ack:\(sent_ack_num), action:\(head.action) -")
         let msgData = sendStruct.archive()
         // send to central
         peripheralManager?.updateValue(msgData, for: characteristicP!, onSubscribedCentrals: nil)
@@ -295,12 +271,64 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let hlenctrl: HlenCtrlByte = [.hlen2, .hlen3, .ack]
         let head = Header(seq_num: sent_seq_num, ack_num: sent_ack_num, hlenCtrlByte: hlenctrl, action: Action.empty)
         let sendStruct = Message(header: head, payload: Data())
-        printAndLog("- Msg sent: seq:\(self.sent_seq_num), ack:\(self.sent_ack_num), action:\(head.action) -")
+        printAndLog("- Msg sent: seq:\(sent_seq_num), ack:\(sent_ack_num), action:\(head.action) -")
         let msgData = sendStruct.archive()
         // send to peripheral
         self.peripheral?.writeValue(msgData, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
         
         printAndLog("HandShaking Step3 is done: Central Sent ACK")
+    }
+    
+    // if payload size is 0, then the message is ACK
+    func sendMessage(payload: Data, action: Action) {
+        let current_payload_size = UInt16(payload.count)
+        
+        // check if the message is ack
+        var isACK: Bool?
+        if current_payload_size == 0 {
+            isACK = true
+        } else {
+            isACK = false
+        }
+
+        // calculate seq number
+        if sent_payload_size == 0 {
+            //sent_seq_num = (try? sent_seq_num+1) ?? UInt16.min // no data no add
+        } else {
+            let overflowByte = Int32(sent_payload_size) - Int32(UInt16.max - sent_seq_num)
+            if overflowByte > 0 {
+                sent_seq_num = UInt16.min + UInt16(overflowByte) - 1
+            } else {
+                sent_seq_num += sent_payload_size
+            }
+        }
+        //calculate ack number
+        let overflowByte = Int32(received_payload_size) - Int32(UInt16.max - sent_ack_num)
+        if overflowByte > 0 {
+            sent_ack_num = UInt16.min + UInt16(overflowByte) - 1
+        } else {
+            sent_ack_num += received_payload_size
+        }
+        
+        //  encapsulation
+        let hlenctrl: HlenCtrlByte?
+        if isACK! {
+            hlenctrl = [.hlen2, .hlen3, .ack]
+        } else {
+            hlenctrl = [.hlen2, .hlen3]
+        }
+        let head = Header(seq_num: sent_seq_num, ack_num: sent_ack_num, hlenCtrlByte: hlenctrl!, action: action)
+        let sendStruct = Message(header: head, payload: payload)
+        printAndLog("- Msg sent: seq:\(sent_seq_num), ack:\(sent_ack_num), action:\(head.action) -")
+        let msgData = sendStruct.archive()
+        
+        // send
+        if isCentral {
+            peripheral?.writeValue(msgData, for: characteristic!, type: CBCharacteristicWriteType.withResponse)
+        }
+        else {
+            peripheralManager?.updateValue(msgData, for: characteristicP!, onSubscribedCentrals: nil)
+        }
     }
     
     func parseMessageData(msgData: Data) {
@@ -309,7 +337,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         received_ack_num = message.header.ack_num
         let hlenCtrl = message.header.hlenCtrlByte
         let action = message.header.action
-        last_payload_size = UInt16(message.payload.count)
+        received_payload_size = UInt16(message.payload.count)
+        printAndLog("- Msg received: seq:\(received_seq_num), ack:\(received_ack_num), action:\(action) -")
         
         // parse the message
         
@@ -324,6 +353,10 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
             timestamp = NSDate().timeIntervalSince1970
             isHandshaking = false
             isConnectionReady = true
+            // set timer for handshake
+            timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
+                self.isConnectionReady = false
+            }
         }
 
         // the message is ACK (used by peripheral)
@@ -332,24 +365,43 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
             timestamp = NSDate().timeIntervalSince1970
             isHandshaking = false
             isConnectionReady = true
+            // set timer for handshake
+            timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
+                self.isConnectionReady = false
+            }
         }
         
-        if action == .sendText {
-            let receivedText = message.payload.string
+        // handle regular message with data
+        if !hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && isConnectionReady {
+            if action == .sendText {
+                let receivedText = message.payload.string
+                
+                //create local messageItem
+                let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                self.tableView.reloadData()
+            }
             
-            //create local messageItem
-            let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
-            
-            // add new chat bubble to tableview
-            Chats.add(thatChat)
-            self.tableView.chatDataSource = self
-            self.tableView.reloadData()
+            // send ACK
+            sendMessage(payload: Data(), action: .empty)
         }
         
     }
     
     func printAndLog(_ thisLog: String) {
-        self.log = self.log + thisLog + "\n\n"
+        //获取当前时间
+        let now = Date()
+        
+        // 创建一个日期格式器
+        let dformatter = DateFormatter()
+        dformatter.dateFormat = "yyyy年MM月dd日 HH:mm:ss.SSSS"
+        let dateTimeStr = dformatter.string(from: now)
+        
+        self.log = self.log + dateTimeStr + "\n" + thisLog + "\n\n"
+        print(dateTimeStr)
         print(thisLog)
     }
     
@@ -460,23 +512,6 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         let msgData = characteristic.value!
         parseMessageData(msgData: msgData)
-//        let message = Message.unarchive(data: msgData)
-//        received_seq_num = message.header.seq_num
-//        received_ack_num = message.header.ack_num
-//        let hlenCtrl = message.header.hlenCtrlByte
-//        let action = message.header.action
-//
-//        if action == .sendText {
-//            let receivedText = message.payload.string
-//
-//            //create local messageItem
-//            let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
-//
-//            // add new chat bubble to tableview
-//            Chats.add(thatChat)
-//            self.tableView.chatDataSource = self
-//            self.tableView.reloadData()
-//        }
     }
     
     /** 写入数据 */
@@ -539,24 +574,6 @@ extension ChatViewController: CBPeripheralManagerDelegate {
         let request = requests.last!
         let msgData = request.value!
         parseMessageData(msgData: msgData)
-        
-//        let message = Message.unarchive(data: msgData)
-//        received_seq_num = message.header.seq_num
-//        received_ack_num = message.header.ack_num
-//        let hlenCtrl = message.header.hlenCtrlByte
-//        let action = message.header.action
-//
-//        if action == .sendText {
-//            let receivedText = message.payload.string
-//
-//            //create local messageItem
-//            let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
-//
-//            // add new chat bubble to tableview
-//            Chats.add(thatChat)
-//            self.tableView.chatDataSource = self
-//            self.tableView.reloadData()
-//        }
         
         // respond to central
         peripheral.respond(to: request, withResult: .success)

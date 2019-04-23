@@ -153,18 +153,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Log" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6Kq-3k-Jbb">
-                                <rect key="frame" x="50" y="114" width="275" height="503"/>
+                                <rect key="frame" x="10" y="74" width="355" height="583"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="top" secondItem="TvK-D6-d67" secondAttribute="top" constant="50" id="YPo-Zt-13X"/>
-                            <constraint firstItem="TvK-D6-d67" firstAttribute="trailing" secondItem="6Kq-3k-Jbb" secondAttribute="trailing" constant="50" id="Zv6-Mx-Ic4"/>
-                            <constraint firstItem="TvK-D6-d67" firstAttribute="bottom" secondItem="6Kq-3k-Jbb" secondAttribute="bottom" constant="50" id="dz1-X2-etM"/>
-                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="leading" secondItem="TvK-D6-d67" secondAttribute="leading" constant="50" id="qBi-9U-MYb"/>
+                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="top" secondItem="TvK-D6-d67" secondAttribute="top" constant="10" id="YPo-Zt-13X"/>
+                            <constraint firstItem="TvK-D6-d67" firstAttribute="trailing" secondItem="6Kq-3k-Jbb" secondAttribute="trailing" constant="10" id="Zv6-Mx-Ic4"/>
+                            <constraint firstItem="TvK-D6-d67" firstAttribute="bottom" secondItem="6Kq-3k-Jbb" secondAttribute="bottom" constant="10" id="dz1-X2-etM"/>
+                            <constraint firstItem="6Kq-3k-Jbb" firstAttribute="leading" secondItem="TvK-D6-d67" secondAttribute="leading" constant="10" id="qBi-9U-MYb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="TvK-D6-d67"/>
                     </view>

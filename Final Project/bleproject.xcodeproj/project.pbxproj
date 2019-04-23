@@ -31,6 +31,7 @@
 		4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */; };
 		4B94535E226C329900A01A75 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B94535D226C329900A01A75 /* PeripheralViewController.swift */; };
 		4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B945363226E8FA800A01A75 /* LogViewController.swift */; };
+		4B945366226EC69900A01A75 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B945365226EC69900A01A75 /* RepeatingTimer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeripheralViewController+Bluetooth.swift"; sourceTree = "<group>"; };
 		4B94535D226C329900A01A75 /* PeripheralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralViewController.swift; sourceTree = "<group>"; };
 		4B945363226E8FA800A01A75 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		4B945365226EC69900A01A75 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */,
 				4B2C3E03225D6DEB00419922 /* Info.plist */,
 				4B2C3DFB225D6DEA00419922 /* bleproject.xcdatamodeld */,
+				4B945365226EC69900A01A75 /* RepeatingTimer.swift */,
 			);
 			path = bleproject;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 				4B2C3DFD225D6DEA00419922 /* bleproject.xcdatamodeld in Sources */,
 				4B68C3D4226BFB4F00177CB3 /* TableHeaderViewCell.swift in Sources */,
 				4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */,
+				4B945366226EC69900A01A75 /* RepeatingTimer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
