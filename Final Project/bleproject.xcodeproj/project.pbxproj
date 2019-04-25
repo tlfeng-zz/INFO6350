@@ -15,6 +15,7 @@
 		4B2C3E02225D6DEB00419922 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */; };
 		4B36FC5722640A9300A8E070 /* CentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5622640A9300A8E070 /* CentralViewController.swift */; };
 		4B36FC5B22640FCF00A8E070 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5A22640FCF00A8E070 /* Message.swift */; };
+		4B51600E22717D68004261F6 /* ActionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51600D22717D68004261F6 /* ActionTableViewController.swift */; };
 		4B68C3AB226BF5AC00177CB3 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */; };
 		4B68C3B0226BF71A00177CB3 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AE226BF71A00177CB3 /* TableView.swift */; };
 		4B68C3B1226BF71A00177CB3 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AF226BF71A00177CB3 /* TableViewCell.swift */; };
@@ -45,6 +46,7 @@
 		4B2C3E03225D6DEB00419922 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B36FC5622640A9300A8E070 /* CentralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralViewController.swift; sourceTree = "<group>"; };
 		4B36FC5A22640FCF00A8E070 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		4B51600D22717D68004261F6 /* ActionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTableViewController.swift; sourceTree = "<group>"; };
 		4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		4B68C3AE226BF71A00177CB3 /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		4B68C3AF226BF71A00177CB3 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				4B2C3DF6225D6DEA00419922 /* MainViewController.swift */,
 				4B945363226E8FA800A01A75 /* LogViewController.swift */,
 				4B2C3DF8225D6DEA00419922 /* Main.storyboard */,
+				4B51600D22717D68004261F6 /* ActionTableViewController.swift */,
 				4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */,
 				4B94535D226C329900A01A75 /* PeripheralViewController.swift */,
 				4B36FC5622640A9300A8E070 /* CentralViewController.swift */,
@@ -237,6 +240,7 @@
 				4B2C3DF5225D6DEA00419922 /* AppDelegate.swift in Sources */,
 				4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */,
 				4B68C3B1226BF71A00177CB3 /* TableViewCell.swift in Sources */,
+				4B51600E22717D68004261F6 /* ActionTableViewController.swift in Sources */,
 				4B68C3D2226BFB0E00177CB3 /* UserInfo.swift in Sources */,
 				4B68C3B3226BF72800177CB3 /* ChatDataSource.swift in Sources */,
 				4B68C3AB226BF5AC00177CB3 /* ChatViewController.swift in Sources */,

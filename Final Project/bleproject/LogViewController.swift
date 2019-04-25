@@ -25,7 +25,7 @@ class LogViewController: UIViewController, UITextViewDelegate {
         logTextView.text = log
         logTextView.delegate = self
     }
-
+    
     /*
     // MARK: - Navigation
 

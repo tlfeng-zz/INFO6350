@@ -125,7 +125,6 @@
         <!--Chat-->
         <scene sceneID="zy0-1r-M25">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dwq-xy-UcA" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="KA1-Ul-CjB" customClass="ChatViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zJu-ZB-YxA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
@@ -134,20 +133,49 @@
                         <viewLayoutGuide key="safeArea" id="9y0-LF-16M"/>
                     </view>
                     <navigationItem key="navigationItem" title="Chat" id="2DK-Lq-vgQ">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="I3L-E6-xGG">
+                        <barButtonItem key="rightBarButtonItem" systemItem="bookmarks" id="I3L-E6-xGG">
                             <connections>
                                 <segue destination="Erm-P5-tl7" kind="show" identifier="log" id="R9W-eL-nms"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dwq-xy-UcA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1914" y="116"/>
+        </scene>
+        <!--Action Table View Controller-->
+        <scene sceneID="hj3-PY-HLu">
+            <objects>
+                <tableViewController storyboardIdentifier="ActionVC" id="pFH-7g-Qvl" customClass="ActionTableViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="0Uz-17-zxo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="6xP-J0-YfG">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6xP-J0-YfG" id="zky-hr-NXs">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="pFH-7g-Qvl" id="5bA-Ae-G1m"/>
+                            <outlet property="delegate" destination="pFH-7g-Qvl" id="enF-rd-IbG"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZFb-Zh-iSG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2058" y="833"/>
         </scene>
         <!--Log View Controller-->
         <scene sceneID="uuq-MG-ZWD">
             <objects>
-                <viewController id="Erm-P5-tl7" customClass="LogViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LogVC" id="Erm-P5-tl7" customClass="LogViewController" customModule="bleproject" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mj6-zL-4Iw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

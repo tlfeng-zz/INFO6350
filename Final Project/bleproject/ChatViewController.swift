@@ -35,8 +35,10 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     var sent_ack_num: UInt16 = 0
     var received_ack_num: UInt16 = 0
     // payload size
-    var sent_payload_size: UInt16 = 0;
-    var received_payload_size: UInt16 = 0;
+    var sent_payload_size: UInt16 = 0
+    var received_payload_size: UInt16 = 0
+    // last sent message
+    var sent_message: Message?
     // connection ready sign
     var isConnectionReady = false
     // timer
@@ -47,6 +49,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     var me: UserInfo!
     var you: UserInfo!
     var msgTextField: UITextField!
+    var sendButton: UIButton!
     
     // record log
     var log: String = ""
@@ -89,20 +92,26 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         self.view.addSubview(sendView)
         
         // create a UIButton as the send message button
-        let sendButton = UIButton(frame:CGRect(x: screenWidth - 80,y: 10,width: 72,height: 36))
+        sendButton = UIButton(frame:CGRect(x: screenWidth - 80,y: 10,width: 72,height: 36))
         sendButton.backgroundColor=UIColor(red: 0x37/255, green: 0xba/255, blue: 0x46/255, alpha: 1)
-        sendButton.addTarget(self, action:#selector(sendTapped) ,
+        sendButton.addTarget(self, action:#selector(addTapped) ,
                              for:UIControl.Event.touchUpInside)
         sendButton.layer.cornerRadius=6.0
-        sendButton.setTitle("发送", for:UIControl.State())
+        sendButton.setTitle("Add", for:UIControl.State())
         sendView.addSubview(sendButton)
         
-        //register tap event, to dismiss keyboard
+        // register tap event, to dismiss keyboard
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
         
-        // add a bar button
-        //self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "test", style: .done, target: self, action: #selector(addTapped))
+        // Move view with keyboard
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        // check when textfield changes
+        msgTextField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
+    
+    
     
     func textFieldShouldReturn(_ textField:UITextField) -> Bool
     {
@@ -110,6 +119,22 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         return true
     }
     
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        if (textField.text != "") {
+            sendButton.setTitle("Send", for:UIControl.State())
+            sendButton.removeTarget(nil, action: nil, for: .allEvents)
+            sendButton.addTarget(self, action:#selector(sendTapped) ,
+                                 for:UIControl.Event.touchUpInside)
+        }
+        else {
+            sendButton.setTitle("Add", for:UIControl.State())
+            sendButton.removeTarget(nil, action: nil, for: .allEvents)
+            sendButton.addTarget(self, action:#selector(addTapped) ,
+                                 for:UIControl.Event.touchUpInside)
+        }
+    }
+    
+    // dismiss keyboard when tapping the view
     @objc func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             print("Dissmiss Keyboard")
@@ -119,7 +144,26 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     }
     
     @objc func addTapped() {
-        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "LogVC") as! LogViewController
+        vc.log = "log"
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    // Move view with keyboard
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+    
+    // Move view with keyboard
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     @objc func sendTapped() {
@@ -144,12 +188,16 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
                 // send through bluetooth
                 let data = (self.msgTextField!.text ?? "empty input")!.data(using: String.Encoding.utf8)
-                self.sendMessage(payload: data!, action: .sendText)
+                self.sendMessage(payload: data!, action: .sendText, control: .none)
         
                 // dismiss keyboard, and clear the input field
                 //self.showTableView()
                 self.msgTextField.resignFirstResponder()
                 self.msgTextField.text = ""
+                self.sendButton.setTitle("Add", for:UIControl.State())
+                self.sendButton.removeTarget(nil, action: nil, for: .allEvents)
+                self.sendButton.addTarget(self, action:#selector(self.addTapped) ,
+                                     for:UIControl.Event.touchUpInside)
             }
         }
 
@@ -226,6 +274,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let msgData = sendStruct.archive()
         // send
         self.peripheral?.writeValue(msgData, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
+        //save message
+        sent_message = sendStruct
         
         printAndLog("HandShaking Step1 is done: Central Sent SYN")
     }
@@ -251,6 +301,8 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let msgData = sendStruct.archive()
         // send to central
         peripheralManager?.updateValue(msgData, for: characteristicP!, onSubscribedCentrals: nil)
+        //save message
+        sent_message = sendStruct
         
         printAndLog("HandShaking Step2 is done: Peripheral Sent ACK")
     }
@@ -259,7 +311,16 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         // step 2: peripheral device send ACK
         printAndLog("HandShaking Step3 start: Central will send ACK")
         
-        // seq_num is the last seq number central used
+        // calculate seq num
+        // seq_num is the last seq number central used +1
+        if sent_seq_num == UInt16.max {
+            sent_seq_num = UInt16.min
+        }
+        else {
+            sent_seq_num = sent_seq_num + 1
+        }
+        
+        // calculate ack num
         if received_seq_num == UInt16.max {
             sent_ack_num = UInt16.min
         }
@@ -275,26 +336,37 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let msgData = sendStruct.archive()
         // send to peripheral
         self.peripheral?.writeValue(msgData, for: self.characteristic!, type: CBCharacteristicWriteType.withResponse)
+        //save message
+        sent_message = sendStruct
         
         printAndLog("HandShaking Step3 is done: Central Sent ACK")
     }
     
-    // if payload size is 0, then the message is ACK
-    func sendMessage(payload: Data, action: Action) {
+    func beginTermination() {
+        printAndLog("Termination Begin: I will send FIN and ACK")
+        sendMessage(payload: Data(), action: .empty, control: .fin)
+    }
+    
+    enum Control {
+        case none
+        case ack
+        case fin
+    }
+    
+    func sendMessage(payload: Data, action: Action, control: Control) {
         let current_payload_size = UInt16(payload.count)
         
-        // check if the message is ack
-        var isACK: Bool?
-        if current_payload_size == 0 {
-            isACK = true
+        var sent_hlenCtrl: HlenCtrlByte!
+        if let sent_message_bind = sent_message {
+            sent_hlenCtrl = sent_message_bind.header.hlenCtrlByte
         } else {
-            isACK = false
+            sent_hlenCtrl = HlenCtrlByte(rawValue: 0)
         }
-
+        
+        
         // calculate seq number
-        if sent_payload_size == 0 {
-            //sent_seq_num = (try? sent_seq_num+1) ?? UInt16.min // no data no add
-        } else {
+        // if last message is ACK: seq don't +1, if contains SYN/FIN: seq+1
+        if sent_hlenCtrl.contains(.syn) || sent_hlenCtrl.contains(.fin) {
             let overflowByte = Int32(sent_payload_size) - Int32(UInt16.max - sent_seq_num)
             if overflowByte > 0 {
                 sent_seq_num = UInt16.min + UInt16(overflowByte) - 1
@@ -312,15 +384,20 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
         //  encapsulation
         let hlenctrl: HlenCtrlByte?
-        if isACK! {
+        if control == .ack {
             hlenctrl = [.hlen2, .hlen3, .ack]
-        } else {
+        }
+        else if control == .fin {
+            hlenctrl = [.hlen2, .hlen3, .ack ,.fin]
+        }
+        else {
             hlenctrl = [.hlen2, .hlen3]
         }
         let head = Header(seq_num: sent_seq_num, ack_num: sent_ack_num, hlenCtrlByte: hlenctrl!, action: action)
         let sendStruct = Message(header: head, payload: payload)
         printAndLog("- Msg sent: seq:\(sent_seq_num), ack:\(sent_ack_num), action:\(head.action) -")
         let msgData = sendStruct.archive()
+        sent_message = sendStruct
         
         // send
         if isCentral {
@@ -339,6 +416,12 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         let action = message.header.action
         received_payload_size = UInt16(message.payload.count)
         printAndLog("- Msg received: seq:\(received_seq_num), ack:\(received_ack_num), action:\(action) -")
+        var sent_hlenCtrl: HlenCtrlByte!
+        if let sent_message_bind = sent_message {
+            sent_hlenCtrl = sent_message_bind.header.hlenCtrlByte
+        } else {
+            sent_hlenCtrl = HlenCtrlByte(rawValue: 0)
+        }
         
         // parse the message
         
@@ -369,10 +452,12 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
             timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
                 self.isConnectionReady = false
             }
+            beginTermination()
         }
         
         // handle regular message with data
         if !hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && isConnectionReady {
+            // 核对ack和seq
             if action == .sendText {
                 let receivedText = message.payload.string
                 
@@ -386,7 +471,39 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
             }
             
             // send ACK
-            sendMessage(payload: Data(), action: .empty)
+            sendMessage(payload: Data(), action: .empty, control: .ack)
+        }
+        
+        // handle regular ACK of receivinga data
+        // besides, is not the ACK in handshake step3 or in termination step2
+        if hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && isConnectionReady && !sent_hlenCtrl.contains(.syn) && !sent_hlenCtrl.contains(.fin) {
+            // validate ack num
+            if received_ack_num != sent_seq_num + sent_payload_size {
+                printAndLog("error: received an incorrect ACK number")
+                // add error handler
+            }
+        }
+        
+        // received FIN
+        if hlenCtrl.contains(.fin){
+            // received termination step1: the first FIN
+            if !sent_hlenCtrl.contains(.fin) {
+                printAndLog("Termination Step1 is done")
+                // send ACK
+                printAndLog("Termination Step2: I will send ACK")
+                sendMessage(payload: Data(), action: .empty, control: .ack)
+                // send FIN
+                printAndLog("Termination Step3: I will send FIN and ACK")
+                sendMessage(payload: Data(), action: .empty, control: .fin)
+            }
+            // received termination step3: the first FIN
+            else {
+                printAndLog("Termination Step3 is done")
+                // send ACK
+                printAndLog("Termination Step4: I will send ACK")
+                sendMessage(payload: Data(), action: .empty, control: .ack)
+                printAndLog("Termination process succeed")
+            }
         }
         
     }
