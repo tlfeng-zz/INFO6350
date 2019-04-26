@@ -9,7 +9,7 @@
 import UIKit
 import CoreBluetooth
 
-class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
+class ChatViewController: UIViewController, ChatDataSource, UITextFieldDelegate, ActionMenuVCDelegate {
     
     // Bluetooth variables
     private let Service_UUID: String = "CDD1"
@@ -43,6 +43,13 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     var isConnectionReady = false
     // timer
     var timer: Timer?
+    
+    // First up, check if we're meant to be sending an EOM
+    fileprivate var sendingEOM = false;
+    var sendDataIndex: Int?
+    var dataToSend: Data?
+    var data: Data = Data()
+    let NOTIFY_MTU: Int = 182
     
     var Chats: NSMutableArray!
     var tableView: TableView!
@@ -145,9 +152,9 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     
     @objc func addTapped() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "LogVC") as! LogViewController
-        vc.log = "log"
+        let vc = storyboard.instantiateViewController(withIdentifier: "ActionVC") as! ActionTableViewController
         self.navigationController?.pushViewController(vc, animated: true)
+        //self.presentBottom(ActionMenuViewController())
     }
     
     // Move view with keyboard
@@ -508,6 +515,111 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
     }
     
+    func sendImageMessage(uiImage: UIImage) {
+    }
+    
+    /** Sends the next amount of data to the connected central
+     */
+    fileprivate func sendData() {
+        if sendingEOM {
+            // send it
+            let didSend = peripheralManager?.updateValue(
+                "EOM".data(using: String.Encoding.utf8)!,
+                for: characteristicP!,
+                onSubscribedCentrals: nil
+            )
+            
+            // Did it send?
+            if (didSend == true) {
+                
+                // It did, so mark it as sent
+                sendingEOM = false
+                
+                print("Sent: EOM")
+            }
+            
+            // It didn't send, so we'll exit and wait for peripheralManagerIsReadyToUpdateSubscribers to call sendData again
+            return
+        }
+        
+        // We're not sending an EOM, so we're sending data
+        
+        // Is there any left to send?
+        guard sendDataIndex! < (dataToSend?.count)! else {
+            // No data left.  Do nothing
+            return
+        }
+        
+        // There's data left, so send until the callback fails, or we're done.
+        var didSend = true
+        
+        while didSend {
+            // Make the next chunk
+            
+            // Work out how big it should be
+            var amountToSend = dataToSend!.count - sendDataIndex!;
+            
+            // Can't be longer than 20 bytes
+            if amountToSend > NOTIFY_MTU {
+                amountToSend = NOTIFY_MTU
+            }
+            
+            // Copy out the data we want
+            let chunk = dataToSend!.withUnsafeBytes{(body: UnsafePointer<UInt8>) in
+                return Data(
+                    bytes: body + sendDataIndex!,
+                    count: amountToSend
+                )
+            }
+            
+            // Send it
+            didSend = peripheralManager!.updateValue(
+                chunk as Data,
+                for: characteristicP!,
+                onSubscribedCentrals: nil
+            )
+            
+            // If it didn't work, drop out and wait for the callback
+            if (!didSend) {
+                return
+            }
+            
+            let stringFromData = NSString(
+                data: chunk as Data,
+                encoding: String.Encoding.utf8.rawValue
+            )
+            
+            print("Sent: \(stringFromData)")
+            
+            // It did send, so update our index
+            sendDataIndex! += amountToSend;
+            
+            // Was it the last one?
+            if (sendDataIndex! >= dataToSend!.count) {
+                
+                // It was - send an EOM
+                
+                // Set this so if the send fails, we'll send it next time
+                sendingEOM = true
+                
+                // Send it
+                let eomSent = peripheralManager!.updateValue(
+                    "EOM".data(using: String.Encoding.utf8)!,
+                    for: characteristicP!,
+                    onSubscribedCentrals: nil
+                )
+                
+                if (eomSent) {
+                    // It sent, we're all done
+                    sendingEOM = false
+                    print("Sent: EOM")
+                }
+                
+                return
+            }
+        }
+    }
+    
     func printAndLog(_ thisLog: String) {
         //获取当前时间
         let now = Date()
@@ -571,6 +683,8 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
         peripheral.delegate = self
         peripheral.discoverServices([CBUUID.init(string: Service_UUID)])
         print("连接成功")
+        // Clear the data that we may already have
+        data.count = 0
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
@@ -616,7 +730,7 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
         if characteristic.isNotifying {
             print("订阅成功")
             if !isHandshaking {
-                beginThreeWayHandshake()
+            //    beginThreeWayHandshake()
                 isHandshaking = true
             }
             
@@ -628,7 +742,41 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
     /** 接收到数据 */ // central handle the received data
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         let msgData = characteristic.value!
-        parseMessageData(msgData: msgData)
+        //parseMessageData(msgData: msgData)
+        
+        guard let stringFromData = NSString(data: characteristic.value!, encoding: String.Encoding.utf8.rawValue) else {
+            print("Invalid data")
+            return
+        }
+        
+        var receivedText: String?
+        // Have we got everything we need?
+        if stringFromData.isEqual(to: "EOM") {
+            // We have, so show the data,
+            let data2 = data
+            receivedText = String(data: data2 as! Data, encoding: String.Encoding.utf8)
+            printAndLog("\(receivedText?.count)")
+            
+            //create local messageItem
+            let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+            
+            // add new chat bubble to tableview
+            Chats.add(thatChat)
+            self.tableView.chatDataSource = self
+            self.tableView.reloadData()
+            // Cancel our subscription to the characteristic
+            //peripheral.setNotifyValue(false, for: characteristic)
+            
+            // and disconnect from the peripehral
+            //centralManager?.cancelPeripheralConnection(peripheral)
+        } else {
+            // Otherwise, just add the data on to what we already have
+            data.append(characteristic.value!)
+            printAndLog("received in process: \(data.count)")
+            
+            // Log it
+            print("Received: \(stringFromData)")
+        }
     }
     
     /** 写入数据 */
@@ -699,11 +847,29 @@ extension ChatViewController: CBPeripheralManagerDelegate {
     /** 订阅成功回调 */
     func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristicP: CBCharacteristic) {
         print("\(#function) 订阅成功回调")
+        
+        msgTextField.text = "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"
+        // Get the data
+        dataToSend = msgTextField.text!.data(using: String.Encoding.utf8)
+        
+        // Reset the index
+        sendDataIndex = 0;
+        
+        // Start sending
+        sendData()
     }
     
     /** 取消订阅回调 */
     func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom characteristicP: CBCharacteristic) {
         print("\(#function) 取消订阅回调")
+    }
+    
+    /** This callback comes in when the PeripheralManager is ready to send the next chunk of data.
+     *  This is to ensure that packets will arrive in the order they are sent
+     */
+    func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
+        // Start sending again
+        sendData()
     }
     
 }
