@@ -13,9 +13,14 @@
 		4B2C3DFD225D6DEA00419922 /* bleproject.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C3DFB225D6DEA00419922 /* bleproject.xcdatamodeld */; };
 		4B2C3DFF225D6DEB00419922 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C3DFE225D6DEB00419922 /* Assets.xcassets */; };
 		4B2C3E02225D6DEB00419922 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */; };
-		4B36FC5722640A9300A8E070 /* CentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5622640A9300A8E070 /* CentralViewController.swift */; };
 		4B36FC5B22640FCF00A8E070 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B36FC5A22640FCF00A8E070 /* Message.swift */; };
 		4B51600E22717D68004261F6 /* ActionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51600D22717D68004261F6 /* ActionTableViewController.swift */; };
+		4B51601222727DC4004261F6 /* ActionMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51601122727DC4004261F6 /* ActionMenuViewController.swift */; };
+		4B51601422727DF2004261F6 /* PresentBottom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51601322727DF2004261F6 /* PresentBottom.swift */; };
+		4B51601822727E46004261F6 /* RoundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51601722727E46004261F6 /* RoundView.swift */; };
+		4B51601E227298F8004261F6 /* ActionMenuVCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51601D227298F8004261F6 /* ActionMenuVCDelegate.swift */; };
+		4B5160202273D481004261F6 /* UIImage+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B51601F2273D481004261F6 /* UIImage+Conversion.swift */; };
+		4B5160222273D4C9004261F6 /* Data+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5160212273D4C9004261F6 /* Data+Conversion.swift */; };
 		4B68C3AB226BF5AC00177CB3 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */; };
 		4B68C3B0226BF71A00177CB3 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AE226BF71A00177CB3 /* TableView.swift */; };
 		4B68C3B1226BF71A00177CB3 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3AF226BF71A00177CB3 /* TableViewCell.swift */; };
@@ -30,9 +35,17 @@
 		4B68C3D4226BFB4F00177CB3 /* TableHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D3226BFB4F00177CB3 /* TableHeaderViewCell.swift */; };
 		4B68C3D8226C1AE900177CB3 /* CentralViewController+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */; };
 		4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */; };
-		4B94535E226C329900A01A75 /* PeripheralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B94535D226C329900A01A75 /* PeripheralViewController.swift */; };
 		4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B945363226E8FA800A01A75 /* LogViewController.swift */; };
 		4B945366226EC69900A01A75 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B945365226EC69900A01A75 /* RepeatingTimer.swift */; };
+		4BCC36E2227458CC002FD8EE /* ChatViewController+TakePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36E1227458CC002FD8EE /* ChatViewController+TakePhoto.swift */; };
+		4BCC36E52274604A002FD8EE /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36E42274604A002FD8EE /* Downloader.swift */; };
+		4BCC36E72274607F002FD8EE /* FileTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36E62274607F002FD8EE /* FileTool.swift */; };
+		4BCC36E92274783F002FD8EE /* ChatViewController+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36E82274783F002FD8EE /* ChatViewController+Download.swift */; };
+		4BCC36ED22747A29002FD8EE /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36EA22747A28002FD8EE /* UIView+Extensions.swift */; };
+		4BCC36EE22747A29002FD8EE /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36EB22747A29002FD8EE /* UIColor+Extensions.swift */; };
+		4BCC36EF22747A29002FD8EE /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36EC22747A29002FD8EE /* UITextField+Extensions.swift */; };
+		4BCC36F122747C87002FD8EE /* GradientButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36F022747C86002FD8EE /* GradientButton.swift */; };
+		4BCC36F3227489AD002FD8EE /* ActionParamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BCC36F2227489AD002FD8EE /* ActionParamViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,9 +57,14 @@
 		4B2C3DFE225D6DEB00419922 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B2C3E01225D6DEB00419922 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4B2C3E03225D6DEB00419922 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4B36FC5622640A9300A8E070 /* CentralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CentralViewController.swift; sourceTree = "<group>"; };
 		4B36FC5A22640FCF00A8E070 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		4B51600D22717D68004261F6 /* ActionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTableViewController.swift; sourceTree = "<group>"; };
+		4B51601122727DC4004261F6 /* ActionMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionMenuViewController.swift; sourceTree = "<group>"; };
+		4B51601322727DF2004261F6 /* PresentBottom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentBottom.swift; sourceTree = "<group>"; };
+		4B51601722727E46004261F6 /* RoundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundView.swift; sourceTree = "<group>"; };
+		4B51601D227298F8004261F6 /* ActionMenuVCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionMenuVCDelegate.swift; sourceTree = "<group>"; };
+		4B51601F2273D481004261F6 /* UIImage+Conversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Conversion.swift"; sourceTree = "<group>"; };
+		4B5160212273D4C9004261F6 /* Data+Conversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Conversion.swift"; sourceTree = "<group>"; };
 		4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		4B68C3AE226BF71A00177CB3 /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		4B68C3AF226BF71A00177CB3 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -61,9 +79,17 @@
 		4B68C3D3226BFB4F00177CB3 /* TableHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderViewCell.swift; sourceTree = "<group>"; };
 		4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CentralViewController+Bluetooth.swift"; sourceTree = "<group>"; };
 		4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PeripheralViewController+Bluetooth.swift"; sourceTree = "<group>"; };
-		4B94535D226C329900A01A75 /* PeripheralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralViewController.swift; sourceTree = "<group>"; };
 		4B945363226E8FA800A01A75 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		4B945365226EC69900A01A75 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
+		4BCC36E1227458CC002FD8EE /* ChatViewController+TakePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+TakePhoto.swift"; sourceTree = "<group>"; };
+		4BCC36E42274604A002FD8EE /* Downloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
+		4BCC36E62274607F002FD8EE /* FileTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTool.swift; sourceTree = "<group>"; };
+		4BCC36E82274783F002FD8EE /* ChatViewController+Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Download.swift"; sourceTree = "<group>"; };
+		4BCC36EA22747A28002FD8EE /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		4BCC36EB22747A29002FD8EE /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		4BCC36EC22747A29002FD8EE /* UITextField+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
+		4BCC36F022747C86002FD8EE /* GradientButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientButton.swift; sourceTree = "<group>"; };
+		4BCC36F2227489AD002FD8EE /* ActionParamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionParamViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,25 +122,43 @@
 		4B2C3DF3225D6DEA00419922 /* bleproject */ = {
 			isa = PBXGroup;
 			children = (
+				4B51601B227298C9004261F6 /* Protocol */,
 				4B68C3D6226C19EB00177CB3 /* Extension */,
 				4B68C3B6226BF9C200177CB3 /* Images */,
 				4B68C3AD226BF6BB00177CB3 /* View */,
 				4B68C3AC226BF6B400177CB3 /* Model */,
+				4B51601022727D6D004261F6 /* Controller */,
+				4BCC36E322746019002FD8EE /* Utility */,
 				4B2C3DF4225D6DEA00419922 /* AppDelegate.swift */,
-				4B2C3DF6225D6DEA00419922 /* MainViewController.swift */,
-				4B945363226E8FA800A01A75 /* LogViewController.swift */,
 				4B2C3DF8225D6DEA00419922 /* Main.storyboard */,
-				4B51600D22717D68004261F6 /* ActionTableViewController.swift */,
-				4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */,
-				4B94535D226C329900A01A75 /* PeripheralViewController.swift */,
-				4B36FC5622640A9300A8E070 /* CentralViewController.swift */,
 				4B2C3DFE225D6DEB00419922 /* Assets.xcassets */,
 				4B2C3E00225D6DEB00419922 /* LaunchScreen.storyboard */,
 				4B2C3E03225D6DEB00419922 /* Info.plist */,
 				4B2C3DFB225D6DEA00419922 /* bleproject.xcdatamodeld */,
-				4B945365226EC69900A01A75 /* RepeatingTimer.swift */,
 			);
 			path = bleproject;
+			sourceTree = "<group>";
+		};
+		4B51601022727D6D004261F6 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4B2C3DF6225D6DEA00419922 /* MainViewController.swift */,
+				4B945363226E8FA800A01A75 /* LogViewController.swift */,
+				4B51600D22717D68004261F6 /* ActionTableViewController.swift */,
+				4B68C3AA226BF5AC00177CB3 /* ChatViewController.swift */,
+				4B51601122727DC4004261F6 /* ActionMenuViewController.swift */,
+				4B51601322727DF2004261F6 /* PresentBottom.swift */,
+				4BCC36F2227489AD002FD8EE /* ActionParamViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		4B51601B227298C9004261F6 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				4B51601D227298F8004261F6 /* ActionMenuVCDelegate.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 		4B68C3AC226BF6B400177CB3 /* Model */ = {
@@ -134,6 +178,7 @@
 				4B68C3AE226BF71A00177CB3 /* TableView.swift */,
 				4B68C3AF226BF71A00177CB3 /* TableViewCell.swift */,
 				4B68C3D3226BFB4F00177CB3 /* TableHeaderViewCell.swift */,
+				4B51601722727E46004261F6 /* RoundView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -153,10 +198,28 @@
 		4B68C3D6226C19EB00177CB3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				4BCC36EB22747A29002FD8EE /* UIColor+Extensions.swift */,
+				4BCC36EC22747A29002FD8EE /* UITextField+Extensions.swift */,
+				4BCC36EA22747A28002FD8EE /* UIView+Extensions.swift */,
 				4B68C3D7226C1AE900177CB3 /* CentralViewController+Bluetooth.swift */,
 				4B68C3D9226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift */,
+				4B51601F2273D481004261F6 /* UIImage+Conversion.swift */,
+				4B5160212273D4C9004261F6 /* Data+Conversion.swift */,
+				4BCC36E1227458CC002FD8EE /* ChatViewController+TakePhoto.swift */,
+				4BCC36E82274783F002FD8EE /* ChatViewController+Download.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		4BCC36E322746019002FD8EE /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				4BCC36F022747C86002FD8EE /* GradientButton.swift */,
+				4B945365226EC69900A01A75 /* RepeatingTimer.swift */,
+				4BCC36E42274604A002FD8EE /* Downloader.swift */,
+				4BCC36E62274607F002FD8EE /* FileTool.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,21 +299,34 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B68C3D8226C1AE900177CB3 /* CentralViewController+Bluetooth.swift in Sources */,
+				4B51601822727E46004261F6 /* RoundView.swift in Sources */,
+				4BCC36E52274604A002FD8EE /* Downloader.swift in Sources */,
+				4B51601222727DC4004261F6 /* ActionMenuViewController.swift in Sources */,
+				4B5160202273D481004261F6 /* UIImage+Conversion.swift in Sources */,
 				4B2C3DF7225D6DEA00419922 /* MainViewController.swift in Sources */,
 				4B2C3DF5225D6DEA00419922 /* AppDelegate.swift in Sources */,
 				4B945364226E8FA800A01A75 /* LogViewController.swift in Sources */,
+				4BCC36E72274607F002FD8EE /* FileTool.swift in Sources */,
 				4B68C3B1226BF71A00177CB3 /* TableViewCell.swift in Sources */,
 				4B51600E22717D68004261F6 /* ActionTableViewController.swift in Sources */,
+				4BCC36EE22747A29002FD8EE /* UIColor+Extensions.swift in Sources */,
 				4B68C3D2226BFB0E00177CB3 /* UserInfo.swift in Sources */,
+				4BCC36ED22747A29002FD8EE /* UIView+Extensions.swift in Sources */,
 				4B68C3B3226BF72800177CB3 /* ChatDataSource.swift in Sources */,
 				4B68C3AB226BF5AC00177CB3 /* ChatViewController.swift in Sources */,
-				4B36FC5722640A9300A8E070 /* CentralViewController.swift in Sources */,
+				4BCC36E92274783F002FD8EE /* ChatViewController+Download.swift in Sources */,
+				4BCC36EF22747A29002FD8EE /* UITextField+Extensions.swift in Sources */,
 				4B68C3B0226BF71A00177CB3 /* TableView.swift in Sources */,
 				4B36FC5B22640FCF00A8E070 /* Message.swift in Sources */,
-				4B94535E226C329900A01A75 /* PeripheralViewController.swift in Sources */,
+				4BCC36F3227489AD002FD8EE /* ActionParamViewController.swift in Sources */,
 				4B68C3B5226BF73400177CB3 /* MessageItem.swift in Sources */,
 				4B2C3DFD225D6DEA00419922 /* bleproject.xcdatamodeld in Sources */,
+				4B51601E227298F8004261F6 /* ActionMenuVCDelegate.swift in Sources */,
+				4B5160222273D4C9004261F6 /* Data+Conversion.swift in Sources */,
+				4B51601422727DF2004261F6 /* PresentBottom.swift in Sources */,
+				4BCC36F122747C87002FD8EE /* GradientButton.swift in Sources */,
 				4B68C3D4226BFB4F00177CB3 /* TableHeaderViewCell.swift in Sources */,
+				4BCC36E2227458CC002FD8EE /* ChatViewController+TakePhoto.swift in Sources */,
 				4B68C3DA226C1B2A00177CB3 /* PeripheralViewController+Bluetooth.swift in Sources */,
 				4B945366226EC69900A01A75 /* RepeatingTimer.swift in Sources */,
 			);

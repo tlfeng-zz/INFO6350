@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +18,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        // Turn on notification
+        //.alert为通知样式，.sound为通知伴有声音，.badge为桌面应用图标的右上角红色数字`
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (success, error) in
+            if success{
+                print("Get permission successfully")
+            }
+            else{
+                print("Get permission fail")
+            }
+        }
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         return true
     }
 

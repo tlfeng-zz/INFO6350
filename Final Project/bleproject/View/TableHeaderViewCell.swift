@@ -31,7 +31,7 @@ class TableHeaderViewCell:UITableViewCell
     {
         self.height  = 30.0
         let dateFormatter =  DateFormatter()
-        dateFormatter.dateFormat = "yyyy年MM月dd日"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         let text =  dateFormatter.string(from: value)
         
         if (self.label != nil)

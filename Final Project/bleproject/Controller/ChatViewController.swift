@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreBluetooth
+import UserNotifications
 
-class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
+class ChatViewController: UIViewController, ChatDataSource, UITextFieldDelegate, ActionMenuVCDelegate {
     
     // Bluetooth variables
     private let Service_UUID: String = "CDD1"
@@ -26,7 +27,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     var isCentral:Bool = true
     // control handshaking
     var isHandshaking = false
-    let handshakeInterval: TimeInterval = 15
+    let handshakeInterval: TimeInterval = 120
     var timestamp: Double = 0
     // seqence number
     var sent_seq_num: UInt16 = 0
@@ -44,12 +45,33 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
     // timer
     var timer: Timer?
     
+    // First up, check if we're meant to be sending an EOM
+    fileprivate var sendingEOM = false;
+    //var sendDataIndex: Int?
+    //var dataToSend: Data?
+    //var data: Data = Data()
+    var NOTIFY_MTU: Int = 500
+    
+    // image data
+    var imageToSend: UIImage?
+    var imageStr: String?
+    var imageData: Data?
+    var amountToSend: Int = 0
+    var sendDataIndex: Int = 0
+    var received_dataSoFar: Data =  Data()
+    var willReceiveImageDataSize: Int = 0
+    
     var Chats: NSMutableArray!
     var tableView: TableView!
     var me: UserInfo!
     var you: UserInfo!
     var msgTextField: UITextField!
     var sendButton: UIButton!
+    
+    // notification
+    var badge: Int = 0
+    
+    fileprivate var downLoader = DownLoader()
     
     // record log
     var log: String = ""
@@ -60,6 +82,7 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         setupChatTable()
         setupSendPanel()
         
+        self.navigationController?.navigationBar.isHidden = false
         // create bluetooth service
         if (isCentral) {
         centralManager = CBCentralManager.init(delegate: self, queue: .main)
@@ -68,6 +91,10 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         peripheralManager = CBPeripheralManager.init(delegate: self, queue: .main)
         }
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
     }
     
     func setupSendPanel()
@@ -139,15 +166,23 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         if sender.state == .ended {
             print("Dissmiss Keyboard")
             msgTextField.resignFirstResponder()
+            // clear badge
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            badge = 0
         }
         sender.cancelsTouchesInView = false
     }
     
     @objc func addTapped() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "LogVC") as! LogViewController
-        vc.log = "log"
-        self.navigationController?.pushViewController(vc, animated: true)
+        let apvc = storyboard.instantiateViewController(withIdentifier: "ActionParamVC") as! ActionParamViewController
+        apvc.delegate = self
+        //self.navigationController?.pushViewController(vc, animated: true)
+        
+        let actionMenuVC = ActionMenuViewController()
+        actionMenuVC.delegate = self
+        actionMenuVC.apvc = apvc
+        self.presentBottom(actionMenuVC)
     }
     
     // Move view with keyboard
@@ -211,28 +246,29 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         self.tableView!.register(TableViewCell.self, forCellReuseIdentifier: "ChatCell")
         
         // define user for different party
-        if isCentral {
+        var mtypeMe: ChatType = .mine
+        var mtypeYou: ChatType = .someone
+        if !isCentral {
+            mtypeMe = .someone
+            mtypeYou = .mine
+        }
+        
             me = UserInfo(name:"Xiaoming" ,logo:("xiaoming.png"))
             you  = UserInfo(name:"Xiaohua", logo:("xiaohua.png"))
-        }
-        else {
-            you = UserInfo(name:"Xiaoming" ,logo:("xiaoming.png"))
-            me  = UserInfo(name:"Xiaohua", logo:("xiaohua.png"))
-        }
         
-        let zero =  MessageItem(body:"最近去哪玩了？", user:you,  date:Date(timeIntervalSinceNow:-90096400), mtype:.someone)
+        let zero =  MessageItem(body:"Where did you go recently？", user:you,  date:Date(timeIntervalSinceNow:-90096400), mtype:mtypeYou)
         
-        let zero1 =  MessageItem(body:"去了趟苏州，明天发照片给你哈？", user:me,  date:Date(timeIntervalSinceNow:-90086400), mtype:.mine)
+        let zero1 =  MessageItem(body:"Went to Suzhou，I'll send you some photos tomorrow？", user:me,  date:Date(timeIntervalSinceNow:-90086400), mtype:mtypeMe)
         
-        let first =  MessageItem(body:"你看这风景怎么样，我周末去苏州拍的！", user:me,  date:Date(timeIntervalSinceNow:-90000600), mtype:.mine)
+        let first =  MessageItem(body:"How about the scenery，I took them at Suzhou！", user:me,  date:Date(timeIntervalSinceNow:-90000600), mtype:mtypeMe)
         
-        let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:.mine)
+        let second =  MessageItem(image:UIImage(named:"sz.png")!,user:me, date:Date(timeIntervalSinceNow:-90000290), mtype:mtypeMe)
         
-        let third =  MessageItem(body:"太赞了，我也想去那看看呢！",user:you, date:Date(timeIntervalSinceNow:-90000060), mtype:.someone)
+        let third =  MessageItem(body:"That's awesome, I would like to go there!",user:you, date:Date(timeIntervalSinceNow:-90000060), mtype:mtypeYou)
         
-        let fouth =  MessageItem(body:"嗯，下次我们一起去吧！",user:me, date:Date(timeIntervalSinceNow:-90000020), mtype:.mine)
+        let fouth =  MessageItem(body:"Ok，next time let's go there together！",user:me, date:Date(timeIntervalSinceNow:-90000020), mtype:mtypeMe)
         
-        let fifth =  MessageItem(body:"三年了，我终究没能看到这个风景",user:you, date:Date(timeIntervalSinceNow:0), mtype:.someone)
+        let fifth =  MessageItem(body:"I has been 3 years, I haven't see the view  eventually.",user:you, date:Date(timeIntervalSinceNow:0), mtype:mtypeYou)
         
         
         Chats = NSMutableArray()
@@ -366,12 +402,21 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
         // calculate seq number
         // if last message is ACK: seq don't +1, if contains SYN/FIN: seq+1
-        if sent_hlenCtrl.contains(.syn) || sent_hlenCtrl.contains(.fin) {
+        // if contains no control, seq+last sent payload size/
+        if !sent_hlenCtrl.contains(.ack) {
             let overflowByte = Int32(sent_payload_size) - Int32(UInt16.max - sent_seq_num)
             if overflowByte > 0 {
                 sent_seq_num = UInt16.min + UInt16(overflowByte) - 1
             } else {
                 sent_seq_num += sent_payload_size
+            }
+        }
+        if sent_hlenCtrl.contains(.syn) || sent_hlenCtrl.contains(.fin) {
+            if sent_seq_num == UInt16.max {
+                sent_seq_num = UInt16.min
+            }
+            else {
+                sent_seq_num = sent_seq_num + 1
             }
         }
         //calculate ack number
@@ -417,10 +462,14 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         received_payload_size = UInt16(message.payload.count)
         printAndLog("- Msg received: seq:\(received_seq_num), ack:\(received_ack_num), action:\(action) -")
         var sent_hlenCtrl: HlenCtrlByte!
+        var sent_action: Action!
         if let sent_message_bind = sent_message {
             sent_hlenCtrl = sent_message_bind.header.hlenCtrlByte
+            sent_payload_size = UInt16(sent_message_bind.payload.count)
+            sent_action = sent_message_bind.header.action
         } else {
             sent_hlenCtrl = HlenCtrlByte(rawValue: 0)
+            sent_action = .empty
         }
         
         // parse the message
@@ -433,36 +482,108 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         // received the ACK in handshake (used by central)
         if hlenCtrl.contains(.ack) && hlenCtrl.contains(.syn) {
             beginHandshakeStepThree(received_seq_num: received_seq_num)
-            timestamp = NSDate().timeIntervalSince1970
-            isHandshaking = false
-            isConnectionReady = true
-            // set timer for handshake
-            timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
-                self.isConnectionReady = false
-            }
+            endHankshakeProcess()
         }
 
         // the message is ACK (used by peripheral)
         if hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && !isConnectionReady {
             printAndLog("Three Way Handshake succeed.")
-            timestamp = NSDate().timeIntervalSince1970
-            isHandshaking = false
-            isConnectionReady = true
-            // set timer for handshake
-            timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
-                self.isConnectionReady = false
-            }
-            beginTermination()
+            endHankshakeProcess()
+            //beginTermination()
         }
         
         // handle regular message with data
         if !hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && isConnectionReady {
-            // 核对ack和seq
+            // Check Ack and Seq
             if action == .sendText {
                 let receivedText = message.payload.string
                 
                 //create local messageItem
                 let thatChat =  MessageItem(body:"\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                self.tableView.reloadData()
+                
+                // add notification
+                addNotification(title: "You have one new message.", subtitle: "", body: receivedText!)
+            }
+            
+            // receive startsign of sendImage
+            if action == .sendImageStart {
+                let receivedText = message.payload.string
+                // record the total size
+                willReceiveImageDataSize = Int(receivedText!)!
+                
+                //create local messageItem
+                let thatChat =  MessageItem(body:"Will Send Image. Size:\(receivedText!)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                self.tableView.reloadData()
+            }
+            
+            
+            // put the splitted image data together
+            if action == .sendImage {
+                let received_dataPart = message.payload
+                received_dataSoFar.append(received_dataPart)
+                
+                // edit in the same bubble: remove and then add
+                Chats.removeLastObject()
+                let percent = Double(received_dataSoFar.count) / Double(willReceiveImageDataSize) * 100
+                let percentStr = String(format: "%.2f", percent) + "%"
+                //create local messageItem
+                let thatChat =  MessageItem(body:"Sending image :\(percentStr)" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                //self.tableView.reloadData()
+                reload(tableView: tableView)
+            }
+            
+            // all chunks have received, and convert to image
+            if action == .sendImageEnd {
+                let received_image = received_dataSoFar.uiImage
+                
+                // edit in the same bubble: remove and then add
+                Chats.removeLastObject()
+                //create local messageItem
+                let thatChat =  MessageItem(image: received_image!, user: you, date: Date(), mtype: ChatType.someone)
+                //clear
+                received_dataSoFar = Data()
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                //self.tableView.reloadData()
+                reload(tableView: tableView)
+                
+                // add notification
+                addNotification(title: "You have one new message.", subtitle: "", body: "[Image]")
+            }
+            
+            // handle the taking photo message
+            if action == .takePhoto {
+                launchCamera()
+                //create local messageItem
+                let thatChat =  MessageItem(body:"[Launch Camera]" as NSString, user:you, date:Date(), mtype:ChatType.someone)
+                
+                // add new chat bubble to tableview
+                Chats.add(thatChat)
+                self.tableView.chatDataSource = self
+                self.tableView.reloadData()
+            }
+            
+            // handle the downloading image message
+            if action == .downloadImage {
+                let urlStr = message.payload.string
+                downloadImage(urlStr: urlStr!)
+                //create local messageItem
+                let thatChat =  MessageItem(body:"[Download Image]" as NSString, user:you, date:Date(), mtype:ChatType.someone)
                 
                 // add new chat bubble to tableview
                 Chats.add(thatChat)
@@ -478,10 +599,68 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         // besides, is not the ACK in handshake step3 or in termination step2
         if hlenCtrl.contains(.ack) && !hlenCtrl.contains(.syn) && isConnectionReady && !sent_hlenCtrl.contains(.syn) && !sent_hlenCtrl.contains(.fin) {
             // validate ack num
+            printAndLog("Checking ACK: rec_ack:\(received_ack_num), sent_seq:\(sent_seq_num), sent_size:\(sent_payload_size)")
             if received_ack_num != sent_seq_num + sent_payload_size {
                 printAndLog("error: received an incorrect ACK number")
                 // add error handler
             }
+            
+            // the message is ACK after send sendImageStart
+            if sent_action == .sendImageStart {
+                // Work out how big it should be
+                amountToSend = imageData!.count - sendDataIndex;
+                printAndLog("amountToSend: \(amountToSend)")
+                
+                // Can't be longer than bluetooth MTU
+                if amountToSend > NOTIFY_MTU {
+                    amountToSend = NOTIFY_MTU
+                }
+                
+                // Copy out the data we want
+                let chunk = imageData!.withUnsafeBytes{(body: UnsafePointer<UInt8>) in
+                    return Data(
+                        bytes: body + sendDataIndex,
+                        count: amountToSend
+                    )
+                }
+                
+                // Send it
+                sendMessage(payload: chunk, action: .sendImage, control: .none)
+            }
+            
+            // the message is ACK after send SendImage
+            if sent_action == .sendImage {
+                
+                // finish sending image
+                if sendDataIndex >= imageData!.count {
+                    let amountToSendData = String(amountToSend).data(using: String.Encoding.utf8)
+                    sendMessage(payload: amountToSendData!, action: .sendImageEnd, control: .none)
+                }
+                else {
+                // It did send, so update our index
+                sendDataIndex += amountToSend;
+                
+                // Work out how big it should be
+                amountToSend = imageData!.count - sendDataIndex;
+                
+                // Can't be longer than bluetooth MTU
+                if amountToSend > NOTIFY_MTU {
+                    amountToSend = NOTIFY_MTU
+                }
+                
+                // Copy out the data we want
+                let chunk = imageData!.withUnsafeBytes{(body: UnsafePointer<UInt8>) in
+                    return Data(
+                        bytes: body + sendDataIndex,
+                        count: amountToSend
+                    )
+                }
+                
+                // Send it
+                sendMessage(payload: chunk, action: .sendImage, control: .none)
+                }
+            }
+            
         }
         
         // received FIN
@@ -508,13 +687,126 @@ class ChatViewController: UIViewController, ChatDataSource,UITextFieldDelegate {
         
     }
     
+    func endHankshakeProcess() {
+        timestamp = NSDate().timeIntervalSince1970
+        isHandshaking = false
+        isConnectionReady = true
+        if isCentral {
+            self.title = "Central Mode: Connected"
+        }
+        else {
+            self.title = "Peripheral Mode: Connected"
+        }
+        // set timer for handshake
+        timer = Timer.scheduledTimer(withTimeInterval: handshakeInterval, repeats: false) { timer in
+            self.isConnectionReady = false
+            if self.isCentral {
+                self.title = "Central Mode: Need HS"
+            }
+            else {
+                self.title = "Peripheral Mode: Need HS"
+            }
+        }
+    }
+    
+    func setImagetoSend(selectedImage: UIImage) {
+        imageToSend = selectedImage
+        imageData = imageToSend?.png
+        sendDataIndex = 0
+        
+        // set MTU
+        if !isCentral {
+            NOTIFY_MTU = 176
+        }
+        
+        let dataSize = "\(imageData!.count)".data(using: String.Encoding.utf8)
+        printAndLog("Image Data size is \(imageData!.count)")
+        sendMessage(payload: dataSize!, action: .sendImageStart, control: .none)
+        
+        //create local messageItem
+        let thatChat =  MessageItem(body:"Will Send Image. Size is \(imageData!.count)" as NSString, user:me, date:Date(), mtype:ChatType.mine)
+        let thatChat2 =  MessageItem(image:imageToSend!, user:me, date:Date(), mtype:ChatType.mine)
+        
+        // add new chat bubble to tableview
+        Chats.add(thatChat)
+        Chats.add(thatChat2)
+        self.tableView.chatDataSource = self
+        self.tableView.reloadData()
+    }
+    
+    func sendTakingPhotoMessage() {
+        printAndLog("Take a Photo")
+        let data = "photo".data(using: String.Encoding.utf8)
+        sendMessage(payload: data!, action: .takePhoto, control: .none)
+        
+        //create local messageItem
+        let thatChat =  MessageItem(body:"[Will launch the camera and take photo]" as NSString, user:me, date:Date(), mtype:ChatType.mine)
+        
+        // add new chat bubble to tableview
+        Chats.add(thatChat)
+        self.tableView.chatDataSource = self
+        self.tableView.reloadData()
+    }
+    
+    func sendDownloadImageMessage(urlStr: String) {
+        printAndLog("Download a Image")
+        let data = urlStr.data(using: String.Encoding.utf8)
+        sendMessage(payload: data!, action: .downloadImage, control: .none)
+        
+        //create local messageItem
+        let thatChat =  MessageItem(body:"[Will download and save the image]" as NSString, user:me, date:Date(), mtype:ChatType.mine)
+        
+        // add new chat bubble to tableview
+        Chats.add(thatChat)
+        self.tableView.chatDataSource = self
+        self.tableView.reloadData()
+    }
+    
+    /** Convert UIImage to a base64 representation
+     */
+    func convertImageToBase64(image: UIImage) -> String {
+        let imageData = image.pngData()!
+        return imageData.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)
+    }
+    
+    /** Convert a base64 representation to a UIImage
+     */
+    func convertBase64ToImage(imageString: String) -> UIImage {
+        let imageData = Data(base64Encoded: imageString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)!
+        return UIImage(data: imageData)!
+    }
+    
+    func addNotification(title: String, subtitle: String, body: String) {
+        self.badge += 1
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.subtitle = subtitle
+        content.body = body
+        content.badge = NSNumber(value: self.badge)
+        content.sound = UNNotificationSound.default // set the default tri-tone
+        let tigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "tianli.request", content: content, trigger: tigger)
+        UNUserNotificationCenter.current().add(request) { (error) in
+            if error == nil{
+                print("Time Interval Notification scheduled: \\\\(requestIdentifier)")
+            }
+        }
+    }
+    
+    func reload(tableView: UITableView) {
+        let contentOffset = tableView.contentOffset
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+        tableView.setContentOffset(contentOffset, animated: false)
+    }
+    
     func printAndLog(_ thisLog: String) {
         //获取当前时间
         let now = Date()
         
         // 创建一个日期格式器
         let dformatter = DateFormatter()
-        dformatter.dateFormat = "yyyy年MM月dd日 HH:mm:ss.SSSS"
+        dformatter.dateFormat = "yyyy/MM/dd  HH:mm:ss.SSSS"
         let dateTimeStr = dformatter.string(from: now)
         
         self.log = self.log + dateTimeStr + "\n" + thisLog + "\n\n"
@@ -540,17 +832,17 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .unknown:
-            print("未知的")
+            print("Unknown")
         case .resetting:
-            print("重置中")
+            print("Resetting")
         case .unsupported:
-            print("不支持")
+            print("Unsupported")
         case .unauthorized:
-            print("未验证")
+            print("Unauthorized")
         case .poweredOff:
-            print("未启动")
+            print("PowerOff")
         case .poweredOn:
-            print("可用")
+            print("PowerOn")
             central.scanForPeripherals(withServices: [CBUUID.init(string: Service_UUID)], options: nil)
         }
     }
@@ -570,15 +862,15 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
         self.centralManager?.stopScan()
         peripheral.delegate = self
         peripheral.discoverServices([CBUUID.init(string: Service_UUID)])
-        print("连接成功")
+        print("Connection succeed")
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        print("连接失败")
+        print("Connection Fail")
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        print("断开连接")
+        print("Discoonnect")
         // 重新连接
         central.connect(peripheral, options: nil)
     }
@@ -633,7 +925,7 @@ extension ChatViewController: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     /** 写入数据 */
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-        print("写入数据")
+        print("Write Value")
     }
     
 }
@@ -644,17 +936,17 @@ extension ChatViewController: CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         switch peripheral.state {
         case .unknown:
-            print("未知的")
+            print("Uknwon")
         case .resetting:
-            print("重置中")
+            print("Resetting")
         case .unsupported:
-            print("不支持")
+            print("Unsupported")
         case .unauthorized:
-            print("未验证")
+            print("Unauthorized")
         case .poweredOff:
-            print("未启动")
+            print("PowerOff")
         case .poweredOn:
-            print("可用")
+            print("Power On")
             // 创建Service（服务）和Characteristics（特征）
             setupServiceAndCharacteristics()
             // 根据服务的UUID开始广播
@@ -704,6 +996,14 @@ extension ChatViewController: CBPeripheralManagerDelegate {
     /** 取消订阅回调 */
     func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didUnsubscribeFrom characteristicP: CBCharacteristic) {
         print("\(#function) 取消订阅回调")
+    }
+    
+    /** This callback comes in when the PeripheralManager is ready to send the next chunk of data.
+     *  This is to ensure that packets will arrive in the order they are sent
+     */
+    func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
+        // Start sending again
+        //sendData()
     }
     
 }

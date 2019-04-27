@@ -96,19 +96,8 @@ enum Action : UInt8{
     case empty = 0
     case sendText = 1
     case sendImage = 2
-}
-
-extension Data {
-    var integer: Int {
-        return withUnsafeBytes { $0.pointee }
-    }
-    var uint8: UInt8 {
-        return withUnsafeBytes { $0.pointee }
-    }
-    var uint16: UInt16 {
-        return withUnsafeBytes { $0.pointee }
-    }
-    var string: String? {
-        return String(data: self, encoding: .utf8)
-    }
+    case sendImageStart = 3
+    case sendImageEnd = 4
+    case takePhoto = 5
+    case downloadImage = 6
 }
